@@ -29,7 +29,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val reqContext = LocalContext.current
-
+            var moneyAdd by remember{
+                mutableStateOf(0)
+            }
             MoneyTapTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
@@ -42,9 +44,11 @@ class MainActivity : ComponentActivity() {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
-                        MainText(content = 100,"$")
+                        MainText(content = moneyAdd,"$")
                         Spacer(modifier = Modifier.height(60.dp))
-                        CircleButton(title = "Tap", reqContext)
+                        CircleButton(title = "Tap", reqContext,moneyAdd){
+                            moneyAdd += 1
+                        }
 }
                 }
             }
@@ -53,14 +57,13 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun CircleButton(title: String, context : Context) {
-    var moneyAdd by remember{
-        mutableStateOf(0)
-    }
+fun CircleButton(title: String, context : Context, moneyAdd : Int = 0, updateMonneyCounter :(Int) -> Unit) {
+
     Button(
         onClick = {
-             Toast.makeText(context, "Log info", Toast.LENGTH_SHORT).show()
-            moneyAdd +=10
+             Toast.makeText(context, "tap-tap", Toast.LENGTH_SHORT).show()
+//            moneyAdd +=10
+            updateMonneyCounter(moneyAdd)
             Log.d("counter", "CircleButton: $moneyAdd")
         },
         Modifier
@@ -74,7 +77,7 @@ fun CircleButton(title: String, context : Context) {
             disabledElevation = 0.dp
         )
     ) {
-        Text(text = title,
+        Text(text = "Tap",
             fontFamily = FontFamily.Monospace,
             color = Color.Black,
             fontSize = 20.sp,
